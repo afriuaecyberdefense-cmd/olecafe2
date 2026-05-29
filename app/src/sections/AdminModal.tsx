@@ -134,7 +134,7 @@ export default function AdminModal({
   }, [onDeleteItem]);
 
   const handleUpdateItemImage = useCallback(
-    (id: string, file: File | null) => {
+    async (id: string, file: File | null) => {
       if (!file) return;
       if (!file.type.startsWith('image/')) {
         setError('Please upload an image file');
@@ -145,19 +145,28 @@ export default function AdminModal({
         return;
       }
 
-      const reader = new FileReader();
-      reader.onload = () => {
-        const result = typeof reader.result === 'string' ? reader.result : '';
-        if (!result) return;
-        setError('');
-        onUpdateItemImage(id, result);
-        setSuccess('Item image updated!');
-        setTimeout(() => setSuccess(''), 3000);
-      };
-      reader.onerror = () => {
-        setError('Failed to read image');
-      };
-      reader.readAsDataURL(file);
+      setError('');
+      setSuccess('');
+
+      const fd = new FormData();
+      fd.append('file', file);
+
+      const res = await fetch('/api/menu/upload-image', {
+        method: 'POST',
+        body: fd,
+      });
+
+      if (!res.ok) {
+        const msg = await res.text();
+        setError(`Image upload failed (${res.status}). ${msg}`);
+        return;
+      }
+
+      const data = (await res.json()) as { imageUrl: string };
+      onUpdateItemImage(id, data.imageUrl);
+
+      setSuccess('Item image updated!');
+      setTimeout(() => setSuccess(''), 3000);
     },
     [onUpdateItemImage]
   );
