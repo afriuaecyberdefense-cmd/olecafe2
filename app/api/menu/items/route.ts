@@ -63,12 +63,17 @@ export async function PUT(req: Request) {
     // Store full array. This includes imageUrl values (Vercel Blob public URLs).
     await kvSet(KV_KEY, JSON.stringify(body.items));
 
-
     return new Response(JSON.stringify({ ok: true }), {
       status: 200,
       headers: { 'Content-Type': 'application/json' },
     });
   } catch (err) {
+    // eslint-disable-next-line no-console
+    console.error('[menu/items PUT] failed', {
+      kvKey: KV_KEY,
+      message: err instanceof Error ? err.message : String(err),
+    });
+
     return new Response(
       JSON.stringify({
         error: 'Failed to save menu items',

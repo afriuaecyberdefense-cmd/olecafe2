@@ -42,12 +42,9 @@ export function useMenuItems() {
   }, []);
 
   const persist = useCallback(async (nextItems: MenuItem[]) => {
-    try {
-      await saveMenuItemsToServer(nextItems);
-    } catch {
-      // Ignore persistence errors in client; UI still updates immediately.
-    }
+    await saveMenuItemsToServer(nextItems);
   }, []);
+
 
   const addItem = useCallback(
     (item: MenuItem) => {
