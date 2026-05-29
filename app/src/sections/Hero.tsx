@@ -53,15 +53,12 @@ export default function Hero() {
 
     if (!file.type.startsWith('image/')) return;
 
-    const reader = new FileReader();
-    reader.onload = () => {
-      // Do not store uploads per-device. Keep default static logo for all phones.
-      // (Admin can update static assets in /imgaes instead.)
-      setHeroLogoSrc('/imgaes/olecafe%20logo.jpeg');
-    };
-
-    reader.readAsDataURL(file);
+    // Logo upload is intentionally not persisted across devices.
+    // Prevent accidental per-device state updates.
+    // (If you want hero/logo uploads persisted later, it must use Vercel Blob + KV like menu images.)
+    setHeroLogoSrc('/imgaes/olecafe%20logo.jpeg');
   };
+
 
   return (
     <section
