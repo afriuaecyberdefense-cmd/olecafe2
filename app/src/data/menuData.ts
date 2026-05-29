@@ -111,27 +111,8 @@ export const CATEGORY_CONFIG: { id: Category; label: string }[] = [
 
 
 
-export function loadMenuItems(): MenuItem[] {
-  // Use shared defaults so all devices see the same menu.
-  // Uploaded images stored in localStorage are device-only, so we disable that behavior.
-  return DEFAULT_MENU_ITEMS;
-}
+// Defaults only. Persistence is handled by the client hook calling /api/menu/items.
+// When KV has no value, the server returns DEFAULT_MENU_ITEMS.
 
-export function saveMenuItems(_items: MenuItem[]): void {
-  // Intentionally no localStorage persistence so images stay shared.
-  // Admin changes are kept in React state only (per-session).
-}
-
-export function addMenuItem(_item: MenuItem): void {
-  // Disabled for persistence; handled in React state only.
-}
-
-export function deleteMenuItem(_id: string): void {
-  // Disabled for persistence; handled in React state only.
-}
-
-export function resetToDefaults(): void {
-  // Disabled for persistence.
-}
 
 

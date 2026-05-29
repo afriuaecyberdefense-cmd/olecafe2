@@ -46,24 +46,44 @@ export default function AdminModal({
   const [imagePreview, setImagePreview] = useState<string>('');
   const [success, setSuccess] = useState('');
 
-  const handleImageUpload = useCallback((file: File | null) => {
+  const handleImageUpload = useCallback(async (file: File | null) => {
     if (!file) return;
     if (!file.type.startsWith('image/')) {
       setError('Please upload an image file');
       return;
     }
 
+    // Preview for UX only
     const reader = new FileReader();
     reader.onload = () => {
       const result = typeof reader.result === 'string' ? reader.result : '';
       setImagePreview(result);
-      setFormData((prev) => ({ ...prev, imageUrl: result }));
     };
     reader.onerror = () => {
       setError('Failed to read image');
     };
     reader.readAsDataURL(file);
+
+    // Upload to Vercel Blob via API
+    const fd = new FormData();
+    fd.append('file', file);
+
+    const res = await fetch('/api/menu/upload-image', {
+      method: 'POST',
+      body: fd,
+    });
+
+    if (!res.ok) {
+      const msg = await res.text();
+      setError(`Image upload failed (${res.status}). ${msg}`);
+      return;
+    }
+
+    const data = (await res.json()) as { imageUrl: string };
+    setError('');
+    setFormData((prev) => ({ ...prev, imageUrl: data.imageUrl }));
   }, []);
+
 
   const handleLogin = useCallback(() => {
     setError('');
