@@ -9,6 +9,7 @@ export default function Hero() {
 
   const [heroLogoSrc, setHeroLogoSrc] = useState<string>(() => {
     // Use static shared logo URL so it works on every device.
+    // (Asset exists at app/imgaes/olecafe logo.jpeg)
     return '/imgaes/olecafe%20logo.jpeg';
   });
 
